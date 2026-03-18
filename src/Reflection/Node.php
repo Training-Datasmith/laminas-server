@@ -60,9 +60,8 @@ class Node
      * //phpcs:enable SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly.ReferenceViaFullyQualifiedName
      * @param  bool $new Whether or not the child node is newly created
      * and should always be attached
-     * @return void
      */
-    public function setParent(Node $node, $new = false)
+    public function setParent(Node $node, $new = false): void
     {
         $this->parent = $node;
 
@@ -79,17 +78,15 @@ class Node
      * @access public
      * @return Node New child node
      */
-    public function createChild($value)
+    public function createChild($value): static
     {
         return new static($value, $this);
     }
 
     /**
      * Attach a child node
-     *
-     * @return void
      */
-    public function attachChild(Node $node)
+    public function attachChild(Node $node): void
     {
         $this->children[] = $node;
 
@@ -110,10 +107,8 @@ class Node
 
     /**
      * Does this node have children?
-     *
-     * @return bool
      */
-    public function hasChildren()
+    public function hasChildren(): bool
     {
         return count($this->children) > 0;
     }
@@ -142,9 +137,8 @@ class Node
      * Set the node value
      *
      * @param mixed $value
-     * @return void
      */
-    public function setValue($value)
+    public function setValue($value): void
     {
         $this->value = $value;
     }
@@ -155,10 +149,8 @@ class Node
      * Retrieves the bottommost nodes of the tree by recursively calling
      * getEndPoints() on all children. If a child is null, it returns the parent
      * as an end point.
-     *
-     * @return array
      */
-    public function getEndPoints()
+    public function getEndPoints(): array
     {
         $endPoints = [];
         if (! $this->hasChildren()) {

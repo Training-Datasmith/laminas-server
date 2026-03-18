@@ -16,7 +16,7 @@ namespace Laminas\Server\Reflection;
 class Prototype
 {
     /** @var ReflectionParameter[] */
-    protected $params;
+    protected array $params;
 
     /**
      * @deprecated This property was previously undeclared therefore it requires public access to maintain BC.

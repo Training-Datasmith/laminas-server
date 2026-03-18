@@ -66,13 +66,11 @@ class Parameter
 
     /**
      * Set object state from array of options
-     *
-     * @return Parameter
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): static
     {
         foreach ($options as $key => $value) {
-            $method = 'set' . ucfirst($key);
+            $method = 'set' . ucfirst((string) $key);
             if (method_exists($this, $method)) {
                 $this->$method($value);
             }
@@ -84,9 +82,8 @@ class Parameter
      * Set default value
      *
      * @param  mixed $defaultValue
-     * @return Parameter
      */
-    public function setDefaultValue($defaultValue)
+    public function setDefaultValue($defaultValue): static
     {
         $this->defaultValue = $defaultValue;
         return $this;
@@ -106,9 +103,8 @@ class Parameter
      * Set description
      *
      * @param  mixed $description
-     * @return Parameter
      */
-    public function setDescription($description)
+    public function setDescription($description): static
     {
         $this->description = (string) $description;
         return $this;
@@ -128,9 +124,8 @@ class Parameter
      * Set name
      *
      * @param  mixed $name
-     * @return Parameter
      */
-    public function setName($name)
+    public function setName($name): static
     {
         $this->name = (string) $name;
         return $this;
@@ -150,9 +145,8 @@ class Parameter
      * Set optional flag
      *
      * @param  mixed $flag
-     * @return Parameter
      */
-    public function setOptional($flag)
+    public function setOptional($flag): static
     {
         $this->optional = (bool) $flag;
         return $this;
@@ -172,9 +166,8 @@ class Parameter
      * Set parameter type
      *
      * @param  mixed $type
-     * @return Parameter
      */
-    public function setType($type)
+    public function setType($type): static
     {
         $this->type = (string) $type;
         return $this;
@@ -192,10 +185,8 @@ class Parameter
 
     /**
      * Cast to array
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'type'         => $this->getType(),

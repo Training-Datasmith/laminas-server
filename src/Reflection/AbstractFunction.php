@@ -41,9 +41,6 @@ use function property_exists;
  */
 abstract class AbstractFunction
 {
-    /** @var ReflectionFunctionAbstract */
-    protected $reflection;
-
     /**
      * Additional arguments to pass to method on invocation
      *
@@ -63,17 +60,13 @@ abstract class AbstractFunction
 
     /**
      * Declaring class (needed for when serialization occurs)
-     *
-     * @var string
      */
-    protected $class;
+    protected string $class;
 
     /**
      * Function name (needed for serialization)
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * Function/method description
@@ -126,10 +119,8 @@ abstract class AbstractFunction
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      */
-    public function __construct(ReflectionFunctionAbstract $r, $namespace = null, $argv = [])
+    public function __construct(protected \ReflectionFunctionAbstract $reflection, $namespace = null, $argv = [])
     {
-        $this->reflection = $r;
-
         // Determine namespace
         if (null !== $namespace) {
             $this->setNamespace($namespace);
@@ -141,11 +132,11 @@ abstract class AbstractFunction
         }
 
         // If method call, need to store some info on the class
-        if ($r instanceof PhpReflectionMethod) {
-            $this->class = $r->getDeclaringClass()->getName();
+        if ($this->reflection instanceof PhpReflectionMethod) {
+            $this->class = $this->reflection->getDeclaringClass()->getName();
         }
 
-        $this->name = $r->getName();
+        $this->name = $this->reflection->getName();
 
         // Perform some introspection
         $this->reflect();
@@ -351,12 +342,11 @@ abstract class AbstractFunction
     /**
      * Proxy reflection calls
      *
-     * @param string $method
      * @param array $args
      * @throws Exception\BadMethodCallException
      * @return mixed
      */
-    public function __call($method, $args)
+    public function __call(string $method, array $args)
     {
         if (method_exists($this->reflection, $method)) {
             return call_user_func_array([$this->reflection, $method], $args);
@@ -370,11 +360,8 @@ abstract class AbstractFunction
      *
      * Values are retrieved by key from {@link $config}. Returns null if no
      * value found.
-     *
-     * @param string $key
-     * @return mixed
      */
-    public function __get($key)
+    public function __get(string $key): mixed
     {
         return $this->config[$key] ?? null;
     }
@@ -384,11 +371,9 @@ abstract class AbstractFunction
      *
      * Values are stored by $key in {@link $config}.
      *
-     * @param string $key
-     * @param mixed $value
      * @return void
      */
-    public function __set($key, $value)
+    public function __set(string $key, mixed $value)
     {
         $this->config[$key] = $value;
     }
@@ -398,9 +383,8 @@ abstract class AbstractFunction
      *
      * @param string $namespace
      * @throws Exception\InvalidArgumentException
-     * @return void
      */
-    public function setNamespace($namespace)
+    public function setNamespace($namespace): void
     {
         if (empty($namespace)) {
             $this->namespace = '';
@@ -429,9 +413,8 @@ abstract class AbstractFunction
      *
      * @param string $string
      * @throws Exception\InvalidArgumentException
-     * @return void
      */
-    public function setDescription($string)
+    public function setDescription($string): void
     {
         if (! is_string($string)) {
             throw new Exception\InvalidArgumentException('Invalid description');

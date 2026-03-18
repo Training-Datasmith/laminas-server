@@ -40,10 +40,9 @@ class Reflection
      * @param string $namespace Optional namespace with which to prefix the
      * method name (used for the signature key). Primarily to avoid collisions,
      * also for XmlRpc namespacing
-     * @return ReflectionClass
      * @throws InvalidArgumentException
      */
-    public static function reflectClass($class, $argv = false, $namespace = '')
+    public static function reflectClass($class, $argv = false, $namespace = ''): \Laminas\Server\Reflection\ReflectionClass
     {
         if (is_object($class)) {
             $reflection = new ReflectionObject($class);
@@ -74,10 +73,9 @@ class Reflection
      * @param string $namespace Optional namespace with which to prefix the
      * function name (used for the signature key). Primarily to avoid
      * collisions, also for XmlRpc namespacing
-     * @return ReflectionFunction
      * @throws InvalidArgumentException
      */
-    public static function reflectFunction($function, $argv = false, $namespace = '')
+    public static function reflectFunction($function, $argv = false, $namespace = ''): \Laminas\Server\Reflection\ReflectionFunction
     {
         if (! is_string($function) || ! function_exists($function)) {
             throw new InvalidArgumentException(sprintf(

@@ -44,9 +44,8 @@ class Cache
      * on success.
      *
      * @param  string $filename
-     * @return bool
      */
-    public static function save($filename, Server $server)
+    public static function save($filename, Server $server): bool
     {
         if (! is_string($filename) || (! file_exists($filename) && ! is_writable(dirname($filename)))) {
             return false;
@@ -92,9 +91,8 @@ class Cache
      * </code>
      *
      * @param  string $filename
-     * @return bool
      */
-    public static function get($filename, Server $server)
+    public static function get($filename, Server $server): bool
     {
         if (! is_string($filename) || ! file_exists($filename) || ! is_readable($filename)) {
             return false;
@@ -123,9 +121,8 @@ class Cache
      * Remove a cache file
      *
      * @param  string $filename
-     * @return bool
      */
-    public static function delete($filename)
+    public static function delete($filename): bool
     {
         if (file_exists($filename)) {
             unlink($filename);
@@ -148,10 +145,7 @@ class Cache
         return self::createDefinitionFromMethodsArray($methods);
     }
 
-    /**
-     * @return Definition
-     */
-    private static function createDefinitionFromMethodsDefinition(Definition $methods)
+    private static function createDefinitionFromMethodsDefinition(Definition $methods): \Laminas\Server\Definition
     {
         $definition = new Definition();
         foreach ($methods as $method) {
@@ -163,10 +157,7 @@ class Cache
         return $definition;
     }
 
-    /**
-     * @return array
-     */
-    private static function createDefinitionFromMethodsArray(array $methods)
+    private static function createDefinitionFromMethodsArray(array $methods): array
     {
         foreach (array_keys($methods) as $methodName) {
             if (in_array($methodName, static::$skipMethods, true)) {

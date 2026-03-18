@@ -20,8 +20,7 @@ abstract class AbstractServer implements Server
     /** @var bool Flag; whether or not overwriting existing methods is allowed */
     protected $overwriteExistingMethods = false;
 
-    /** @var Definition */
-    protected $table;
+    protected \Laminas\Server\Definition $table;
 
     /**
      * Constructor

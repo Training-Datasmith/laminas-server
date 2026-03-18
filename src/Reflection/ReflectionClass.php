@@ -49,18 +49,9 @@ class ReflectionClass
     protected $namespace;
 
     /**
-     * ReflectionClass object
-     *
-     * @var PhpReflectionClass
-     */
-    protected $reflection;
-
-    /**
      * Reflection class name (needed for serialization)
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * Constructor
@@ -71,15 +62,17 @@ class ReflectionClass
      * @param string $namespace
      * @param mixed $argv
      */
-    public function __construct(PhpReflectionClass $reflection, $namespace = null, $argv = false)
+    public function __construct(/**
+     * ReflectionClass object
+     */
+    protected \ReflectionClass $reflection, $namespace = null, $argv = false)
     {
-        $this->reflection = $reflection;
-        $this->name       = $reflection->getName();
+        $this->name       = $this->reflection->getName();
         $this->setNamespace($namespace);
 
         $argv = is_array($argv) ? $argv : [];
 
-        foreach ($reflection->getMethods() as $method) {
+        foreach ($this->reflection->getMethods() as $method) {
             // Don't aggregate magic methods
             if (str_starts_with($method->getName(), '__')) {
                 continue;
@@ -95,12 +88,11 @@ class ReflectionClass
     /**
      * Proxy reflection calls
      *
-     * @param string $method
      * @param array $args
      * @throws Exception\BadMethodCallException
      * @return mixed
      */
-    public function __call($method, $args)
+    public function __call(string $method, array $args)
     {
         if (method_exists($this->reflection, $method)) {
             return call_user_func_array([$this->reflection, $method], $args);
@@ -114,11 +106,8 @@ class ReflectionClass
      *
      * Values are retrieved by key from {@link $config}. Returns null if no
      * value found.
-     *
-     * @param string $key
-     * @return mixed
      */
-    public function __get($key)
+    public function __get(string $key): mixed
     {
         return $this->config[$key] ?? null;
     }
@@ -128,11 +117,9 @@ class ReflectionClass
      *
      * Values are stored by $key in {@link $config}.
      *
-     * @param string $key
-     * @param mixed $value
      * @return void
      */
-    public function __set($key, $value)
+    public function __set(string $key, mixed $value)
     {
         $this->config[$key] = $value;
     }
@@ -163,9 +150,8 @@ class ReflectionClass
      *
      * @param string $namespace
      * @throws Exception\InvalidArgumentException
-     * @return void
      */
-    public function setNamespace($namespace)
+    public function setNamespace($namespace): void
     {
         if (empty($namespace)) {
             $this->namespace = '';

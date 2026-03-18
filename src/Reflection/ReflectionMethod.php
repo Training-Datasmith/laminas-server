@@ -36,24 +36,19 @@ class ReflectionMethod extends AbstractFunction
     protected $class;
 
     /**
-     * Parent class reflection
-     *
-     * @var ReflectionClass|\ReflectionClass
-     */
-    protected $classReflection;
-
-    /**
      * Constructor
      *
      * @param string $namespace
      * @param array $argv
      */
-    public function __construct(ReflectionClass $class, \ReflectionMethod $r, $namespace = null, $argv = [])
+    public function __construct(/**
+     * Parent class reflection
+     */
+    protected \Laminas\Server\Reflection\ReflectionClass $classReflection, \ReflectionMethod $r, $namespace = null, $argv = [])
     {
-        $this->classReflection = $class;
         $this->reflection      = $r;
 
-        $classNamespace = $class->getNamespace();
+        $classNamespace = $this->classReflection->getNamespace();
 
         // Determine namespace
         if (! empty($namespace)) {
@@ -66,7 +61,7 @@ class ReflectionMethod extends AbstractFunction
         $this->argv = $argv;
 
         // If method call, need to store some info on the class
-        $this->class = $class->getName();
+        $this->class = $this->classReflection->getName();
         $this->name  = $r->getName();
 
         // Perform some introspection
@@ -122,10 +117,8 @@ class ReflectionMethod extends AbstractFunction
 
     /**
      * Fetch all doc comments for inherit values
-     *
-     * @return string
      */
-    private function fetchRecursiveDocComment()
+    private function fetchRecursiveDocComment(): string
     {
         $currentMethodName = $this->reflection->getName();
         $docCommentList[]  = $this->reflection->getDocComment();
@@ -147,11 +140,10 @@ class ReflectionMethod extends AbstractFunction
         }
 
         $normalizedDocCommentList = array_map(
-            function ($docComment) {
+            function ($docComment): string|array {
                 $docComment = str_replace('/**', '', $docComment);
-                $docComment = str_replace('*/', '', $docComment);
 
-                return $docComment;
+                return str_replace('*/', '', $docComment);
             },
             $docCommentList
         );
@@ -194,9 +186,8 @@ class ReflectionMethod extends AbstractFunction
      * Return true if doc block inherit from parent or interface
      *
      * @param string $docComment
-     * @return bool
      */
-    private function isInherit($docComment)
+    private function isInherit($docComment): bool
     {
         return str_contains($docComment, self::INHERIT_TAG);
     }

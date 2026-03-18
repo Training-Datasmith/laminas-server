@@ -51,9 +51,8 @@ class Definition implements Countable, Iterator
      * Set flag indicating whether or not overwriting existing methods is allowed
      *
      * @param mixed $flag
-     * @return Definition
      */
-    public function setOverwriteExistingMethods($flag)
+    public function setOverwriteExistingMethods($flag): static
     {
         $this->overwriteExistingMethods = (bool) $flag;
         return $this;
@@ -64,10 +63,9 @@ class Definition implements Countable, Iterator
      *
      * @param  array|\Laminas\Server\Method\Definition $method
      * @param  null|string $name
-     * @return Definition
      * @throws InvalidArgumentException If duplicate or invalid method provided.
      */
-    public function addMethod($method, $name = null)
+    public function addMethod($method, $name = null): static
     {
         if (is_array($method)) {
             $method = new Method\Definition($method);
@@ -98,9 +96,8 @@ class Definition implements Countable, Iterator
      * Add multiple methods
      *
      * @param  array $methods Array of \Laminas\Server\Method\Definition objects or arrays
-     * @return Definition
      */
-    public function addMethods(array $methods)
+    public function addMethods(array $methods): static
     {
         foreach ($methods as $key => $method) {
             $this->addMethod($method, $key);
@@ -112,9 +109,8 @@ class Definition implements Countable, Iterator
      * Set all methods at once (overwrite)
      *
      * @param  array $methods Array of \Laminas\Server\Method\Definition objects or arrays
-     * @return Definition
      */
-    public function setMethods(array $methods)
+    public function setMethods(array $methods): static
     {
         $this->clearMethods();
         $this->addMethods($methods);
@@ -125,9 +121,8 @@ class Definition implements Countable, Iterator
      * Does the definition have the given method?
      *
      * @param  string $method
-     * @return bool
      */
-    public function hasMethod($method)
+    public function hasMethod($method): bool
     {
         return array_key_exists($method, $this->methods);
     }
@@ -160,9 +155,8 @@ class Definition implements Countable, Iterator
      * Remove a method definition
      *
      * @param  string $method
-     * @return Definition
      */
-    public function removeMethod($method)
+    public function removeMethod($method): static
     {
         if ($this->hasMethod($method)) {
             unset($this->methods[$method]);
@@ -172,10 +166,8 @@ class Definition implements Countable, Iterator
 
     /**
      * Clear all method definitions
-     *
-     * @return Definition
      */
-    public function clearMethods()
+    public function clearMethods(): static
     {
         $this->methods = [];
         return $this;
@@ -183,10 +175,8 @@ class Definition implements Countable, Iterator
 
     /**
      * Cast definition to an array
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $methods = [];
         foreach ($this->getMethods() as $key => $method) {
@@ -246,12 +236,10 @@ class Definition implements Countable, Iterator
 
     /**
      * Iterator: return to first method
-     *
-     * @return void
      */
     #[Override]
     #[ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         reset($this->methods);
     }

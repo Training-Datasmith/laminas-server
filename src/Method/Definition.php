@@ -55,13 +55,11 @@ class Definition
 
     /**
      * Set object state from options
-     *
-     * @return Definition
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): static
     {
         foreach ($options as $key => $value) {
-            $method = 'set' . ucfirst($key);
+            $method = 'set' . ucfirst((string) $key);
             if (method_exists($this, $method)) {
                 $this->$method($value);
             }
@@ -73,9 +71,8 @@ class Definition
      * Set method name
      *
      * @param  string $name
-     * @return Definition
      */
-    public function setName($name)
+    public function setName($name): static
     {
         $this->name = $name;
         return $this;
@@ -96,9 +93,8 @@ class Definition
      *
      * @param array|Callback $callback
      * @throws Server\Exception\InvalidArgumentException
-     * @return Definition
      */
-    public function setCallback($callback)
+    public function setCallback($callback): static
     {
         if (is_array($callback)) {
             $callback = new Callback($callback);
@@ -124,9 +120,8 @@ class Definition
      *
      * @param array|Prototype $prototype
      * @throws Server\Exception\InvalidArgumentException
-     * @return Definition
      */
-    public function addPrototype($prototype)
+    public function addPrototype($prototype): static
     {
         if (is_array($prototype)) {
             $prototype = new Prototype($prototype);
@@ -141,9 +136,8 @@ class Definition
      * Add multiple prototypes at once
      *
      * @param  array $prototypes Array of \Laminas\Server\Method\Prototype objects or arrays
-     * @return Definition
      */
-    public function addPrototypes(array $prototypes)
+    public function addPrototypes(array $prototypes): static
     {
         foreach ($prototypes as $prototype) {
             $this->addPrototype($prototype);
@@ -155,9 +149,8 @@ class Definition
      * Set all prototypes at once (overwrites)
      *
      * @param  array $prototypes Array of \Laminas\Server\Method\Prototype objects or arrays
-     * @return Definition
      */
-    public function setPrototypes(array $prototypes)
+    public function setPrototypes(array $prototypes): static
     {
         $this->prototypes = [];
         $this->addPrototypes($prototypes);
@@ -178,9 +171,8 @@ class Definition
      * Set method help
      *
      * @param  string $methodHelp
-     * @return Definition
      */
-    public function setMethodHelp($methodHelp)
+    public function setMethodHelp($methodHelp): static
     {
         $this->methodHelp = $methodHelp;
         return $this;
@@ -201,9 +193,8 @@ class Definition
      *
      * @param  object $object
      * @throws Server\Exception\InvalidArgumentException
-     * @return Definition
      */
-    public function setObject($object)
+    public function setObject($object): static
     {
         if (! is_object($object) && (null !== $object)) {
             throw new Server\Exception\InvalidArgumentException(sprintf(
@@ -227,10 +218,8 @@ class Definition
 
     /**
      * Set invoke arguments
-     *
-     * @return Definition
      */
-    public function setInvokeArguments(array $invokeArguments)
+    public function setInvokeArguments(array $invokeArguments): static
     {
         $this->invokeArguments = $invokeArguments;
         return $this;
@@ -248,10 +237,8 @@ class Definition
 
     /**
      * Serialize to array
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $prototypes = $this->getPrototypes();
         $signatures = [];

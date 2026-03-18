@@ -54,10 +54,10 @@ class Callback
      *
      * @return Callback
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): static
     {
         foreach ($options as $key => $value) {
-            $method = 'set' . ucfirst($key);
+            $method = 'set' . ucfirst((string) $key);
             if (method_exists($this, $method)) {
                 $this->$method($value);
             }
@@ -71,7 +71,7 @@ class Callback
      * @param  string $class
      * @return Callback
      */
-    public function setClass($class)
+    public function setClass($class): static
     {
         if (is_object($class)) {
             $class = $class::class;
@@ -96,7 +96,7 @@ class Callback
      * @param  string|callable $function
      * @return Callback
      */
-    public function setFunction($function)
+    public function setFunction($function): static
     {
         $this->function = $function;
         $this->setType('function');
@@ -119,7 +119,7 @@ class Callback
      * @param  string $method
      * @return Callback
      */
-    public function setMethod($method)
+    public function setMethod($method): static
     {
         $this->method = $method;
         return $this;
@@ -142,7 +142,7 @@ class Callback
      * @return Callback
      * @throws Server\Exception\InvalidArgumentException
      */
-    public function setType($type)
+    public function setType($type): static
     {
         if (! in_array($type, $this->types)) {
             throw new Server\Exception\InvalidArgumentException(sprintf(
@@ -167,10 +167,8 @@ class Callback
 
     /**
      * Cast callback to array
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $type  = $this->getType();
         $array = [

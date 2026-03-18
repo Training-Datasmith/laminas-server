@@ -22,9 +22,6 @@ use function method_exists;
  */
 class ReflectionParameter
 {
-    /** @var \ReflectionParameter */
-    protected $reflection;
-
     /**
      * Parameter position
      *
@@ -48,10 +45,8 @@ class ReflectionParameter
 
     /**
      * Parameter name (needed for serialization)
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * Declaring function name (needed for serialization)
@@ -66,15 +61,13 @@ class ReflectionParameter
      * @param string $type Parameter type
      * @param string $description Parameter description
      */
-    public function __construct(\ReflectionParameter $r, $type = 'mixed', $description = '')
+    public function __construct(protected \ReflectionParameter $reflection, $type = 'mixed', $description = '')
     {
-        $this->reflection = $r;
-
         // Store parameters needed for (un)serialization
-        $this->name         = $r->getName();
-        $this->functionName = $r->getDeclaringClass()
-            ? [$r->getDeclaringClass()->getName(), $r->getDeclaringFunction()->getName()]
-            : $r->getDeclaringFunction()->getName();
+        $this->name         = $this->reflection->getName();
+        $this->functionName = $this->reflection->getDeclaringClass()
+            ? [$this->reflection->getDeclaringClass()->getName(), $this->reflection->getDeclaringFunction()->getName()]
+            : $this->reflection->getDeclaringFunction()->getName();
 
         $this->setType($type);
         $this->setDescription($description);
@@ -83,12 +76,11 @@ class ReflectionParameter
     /**
      * Proxy reflection calls
      *
-     * @param string $method
      * @param array $args
      * @throws Exception\BadMethodCallException
      * @return mixed
      */
-    public function __call($method, $args)
+    public function __call(string $method, array $args)
     {
         if (method_exists($this->reflection, $method)) {
             return call_user_func_array([$this->reflection, $method], $args);
@@ -112,9 +104,8 @@ class ReflectionParameter
      *
      * @param string|null $type
      * @throws Exception\InvalidArgumentException
-     * @return void
      */
-    public function setType($type)
+    public function setType($type): void
     {
         if (! is_string($type) && (null !== $type)) {
             throw new Exception\InvalidArgumentException('Invalid parameter type');
@@ -138,9 +129,8 @@ class ReflectionParameter
      *
      * @param string|null $description
      * @throws Exception\InvalidArgumentException
-     * @return void
      */
-    public function setDescription($description)
+    public function setDescription($description): void
     {
         if (! is_string($description) && (null !== $description)) {
             throw new Exception\InvalidArgumentException('Invalid parameter description');
@@ -153,9 +143,8 @@ class ReflectionParameter
      * Set parameter position
      *
      * @param int $index
-     * @return void
      */
-    public function setPosition($index)
+    public function setPosition($index): void
     {
         $this->position = $index;
     }

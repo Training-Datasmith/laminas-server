@@ -48,9 +48,8 @@ class Prototype
      * Set return value
      *
      * @param  string $returnType
-     * @return Prototype
      */
-    public function setReturnType($returnType)
+    public function setReturnType($returnType): static
     {
         $this->returnType = $returnType;
         return $this;
@@ -70,9 +69,8 @@ class Prototype
      * Add a parameter
      *
      * @param  string|Parameter $parameter
-     * @return Prototype
      */
-    public function addParameter($parameter)
+    public function addParameter($parameter): static
     {
         if ($parameter instanceof Parameter) {
             $this->parameters[]            = $parameter;
@@ -89,10 +87,8 @@ class Prototype
 
     /**
      * Add parameters
-     *
-     * @return Prototype
      */
-    public function addParameters(array $parameters)
+    public function addParameters(array $parameters): static
     {
         foreach ($parameters as $parameter) {
             $this->addParameter($parameter);
@@ -102,10 +98,8 @@ class Prototype
 
     /**
      * Set parameters
-     *
-     * @return Prototype
      */
-    public function setParameters(array $parameters)
+    public function setParameters(array $parameters): static
     {
         $this->parameters       = [];
         $this->parameterNameMap = [];
@@ -115,10 +109,8 @@ class Prototype
 
     /**
      * Retrieve parameters as list of types
-     *
-     * @return array
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         $types = [];
         foreach ($this->parameters as $parameter) {
@@ -159,13 +151,11 @@ class Prototype
 
     /**
      * Set object state from array
-     *
-     * @return Prototype
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): static
     {
         foreach ($options as $key => $value) {
-            $method = 'set' . ucfirst($key);
+            $method = 'set' . ucfirst((string) $key);
             if (method_exists($this, $method)) {
                 $this->$method($value);
             }
@@ -175,10 +165,8 @@ class Prototype
 
     /**
      * Serialize to array
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'returnType' => $this->getReturnType(),
