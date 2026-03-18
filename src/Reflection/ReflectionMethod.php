@@ -1,20 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
 
 namespace Laminas\Server\Reflection;
 
-use Override;
-
 use function array_map;
+
 use function array_merge;
 use function implode;
-use function str_contains;
-use function str_replace;
+
+use Override;
 
 use const PHP_EOL;
+
+use function str_contains;
+
+use function str_replace;
 
 /**
  * Method Reflection
@@ -44,8 +49,11 @@ class ReflectionMethod extends AbstractFunction
     public function __construct(/**
      * Parent class reflection
      */
-    protected \Laminas\Server\Reflection\ReflectionClass $classReflection, \ReflectionMethod $r, $namespace = null, $argv = [])
-    {
+        protected \Laminas\Server\Reflection\ReflectionClass $classReflection,
+        \ReflectionMethod $r,
+        $namespace = null,
+        $argv = []
+    ) {
         $this->reflection      = $r;
 
         $classNamespace = $this->classReflection->getNamespace();

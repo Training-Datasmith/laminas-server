@@ -1,16 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
 
 namespace Laminas\Server;
 
-use Laminas\Server\Server;
-use Laminas\Stdlib\ErrorHandler;
-
 use function array_keys;
+
 use function dirname;
+
+use const E_NOTICE;
+
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
@@ -18,11 +21,13 @@ use function in_array;
 use function is_readable;
 use function is_string;
 use function is_writable;
+
+use Laminas\Stdlib\ErrorHandler;
+
 use function serialize;
 use function unlink;
-use function unserialize;
 
-use const E_NOTICE;
+use function unserialize;
 
 /**
  * \Laminas\Server\Cache: cache server definitions

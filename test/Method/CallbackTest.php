@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
@@ -71,7 +73,7 @@ final class CallbackTest extends TestCase
         $callable = /**
          * @return true
          */
-        fn(): bool => true;
+        fn (): bool => true;
         $this->callback->setFunction($callable);
         $this->assertEquals($callable, $this->callback->getFunction());
     }

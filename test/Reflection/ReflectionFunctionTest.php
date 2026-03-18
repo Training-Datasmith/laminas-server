@@ -1,17 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
 
 namespace LaminasTest\Server\Reflection;
 
+use function in_array;
+
 use Laminas\Server\Reflection;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
+
 use ReflectionFunction;
 
-use function in_array;
 use function serialize;
 use function unserialize;
 use function var_export;

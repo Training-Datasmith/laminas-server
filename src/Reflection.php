@@ -1,22 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
 
 namespace Laminas\Server;
 
+use function class_exists;
+use function function_exists;
+use function in_array;
+use function is_array;
+
+use function is_object;
+use function is_string;
+
 use Laminas\Server\Reflection\Exception\InvalidArgumentException;
 use Laminas\Server\Reflection\ReflectionClass;
 use Laminas\Server\Reflection\ReflectionFunction;
 use ReflectionObject;
 
-use function class_exists;
-use function function_exists;
-use function in_array;
-use function is_array;
-use function is_object;
-use function is_string;
 use function sprintf;
 
 /**

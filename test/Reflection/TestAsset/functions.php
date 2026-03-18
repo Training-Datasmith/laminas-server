@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\Server\Reflection\TestAsset;
 
 use function is_array;

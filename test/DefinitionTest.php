@@ -1,19 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
 
 namespace LaminasTest\Server;
 
+use function array_shift;
+use function array_values;
+
 use Laminas\Server;
 use Laminas\Server\Method;
 use Override;
+
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
-
-use function array_shift;
-use function array_values;
 
 /**
  * Test class for Laminas\Server\Definition

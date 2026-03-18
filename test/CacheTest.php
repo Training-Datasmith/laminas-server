@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
 
 namespace LaminasTest\Cache;
+
+use function file_get_contents;
 
 use Laminas\Server\Cache;
 use Laminas\Server\Definition;
@@ -13,9 +17,9 @@ use Laminas\Server\Method\Definition as MethodDefinition;
 use Laminas\Server\Server;
 use Override;
 use PHPUnit\Framework\TestCase;
+
 use ReflectionProperty;
 
-use function file_get_contents;
 use function sys_get_temp_dir;
 use function tempnam;
 use function unlink;

@@ -1,16 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
 
 namespace Laminas\Server\Method;
 
-use Laminas\Server;
-
 use function in_array;
+
 use function is_array;
 use function is_object;
+
+use Laminas\Server;
+
 use function method_exists;
 use function sprintf;
 use function ucfirst;

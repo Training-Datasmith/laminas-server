@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
 
 namespace Laminas\Server;
 
-use Override;
-use ReflectionClass;
-
 use function call_user_func_array;
 use function is_object;
+
+use Override;
+use ReflectionClass;
 
 /**
  * Abstract Server implementation
@@ -82,7 +84,7 @@ abstract class AbstractServer implements Server
     // @codingStandardsIgnoreStart
     protected function _buildCallback(Reflection\AbstractFunction $reflection)
     {
-    // @codingStandardsIgnoreEnd
+        // @codingStandardsIgnoreEnd
         return $this->buildCallback($reflection);
     }
 
@@ -145,7 +147,7 @@ abstract class AbstractServer implements Server
     // @codingStandardsIgnoreStart
     protected function _buildSignature(Reflection\AbstractFunction $reflection, $class = null)
     {
-    // @codingStandardsIgnoreEnd
+        // @codingStandardsIgnoreEnd
         return $this->buildSignature($reflection, $class);
     }
 
@@ -160,7 +162,7 @@ abstract class AbstractServer implements Server
     // @codingStandardsIgnoreStart
     protected function _dispatch(Method\Definition $invokable, array $params)
     {
-    // @codingStandardsIgnoreEnd
+        // @codingStandardsIgnoreEnd
         $callback = $invokable->getCallback();
         $type     = $callback->getType();
 

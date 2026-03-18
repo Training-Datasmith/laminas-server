@@ -1,33 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
 
 namespace Laminas\Server\Reflection;
 
-use Deprecated;
-use Laminas\Code\Reflection\DocBlock\Tag\ParamTag;
-use Laminas\Code\Reflection\DocBlock\Tag\ReturnTag;
-use Laminas\Code\Reflection\DocBlockReflection;
-use ReflectionClass as PhpReflectionClass;
-use ReflectionFunction as PhpReflectionFunction;
-use ReflectionFunctionAbstract;
-use ReflectionMethod as PhpReflectionMethod;
-use ReflectionNamedType;
-use ReflectionParameter as PhpReflectionParameter;
-
 use function array_merge;
 use function array_shift;
 use function array_unshift;
 use function call_user_func_array;
 use function count;
+
+use Deprecated;
+
 use function get_object_vars;
 use function is_array;
 use function is_string;
+
+use Laminas\Code\Reflection\DocBlock\Tag\ParamTag;
+use Laminas\Code\Reflection\DocBlock\Tag\ReturnTag;
+use Laminas\Code\Reflection\DocBlockReflection;
+
 use function method_exists;
 use function preg_match;
 use function property_exists;
+
+use ReflectionClass as PhpReflectionClass;
+use ReflectionFunction as PhpReflectionFunction;
+use ReflectionMethod as PhpReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter as PhpReflectionParameter;
 
 /**
  * Function/Method Reflection
@@ -271,7 +276,7 @@ abstract class AbstractFunction
             $this->docComment = $function->getDocComment();
         }
 
-        $scanner  = new DocBlockReflection($this->docComment ? : '/***/');
+        $scanner  = new DocBlockReflection($this->docComment ?: '/***/');
         $helpText = $scanner->getLongDescription();
         /** @var ParamTag[] $paramTags */
         $paramTags = $scanner->getTags('param');
@@ -309,7 +314,7 @@ abstract class AbstractFunction
             $paramDesc = [];
             foreach ($paramTags as $paramTag) {
                 $paramTypesTmp[] = $paramTag->getTypes();
-                $paramDesc[]     = $paramTag->getDescription() ? : '';
+                $paramDesc[]     = $paramTag->getDescription() ?: '';
             }
         }
 

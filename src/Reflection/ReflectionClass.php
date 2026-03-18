@@ -1,19 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
 
 namespace Laminas\Server\Reflection;
 
-use Deprecated;
-use ReflectionClass as PhpReflectionClass;
-
 use function call_user_func_array;
+
+use Deprecated;
+
 use function is_array;
 use function is_string;
 use function method_exists;
 use function preg_match;
+
+use ReflectionClass as PhpReflectionClass;
+
 use function str_starts_with;
 
 /**
@@ -65,8 +70,10 @@ class ReflectionClass
     public function __construct(/**
      * ReflectionClass object
      */
-    protected \ReflectionClass $reflection, $namespace = null, $argv = false)
-    {
+        protected \ReflectionClass $reflection,
+        $namespace = null,
+        $argv = false
+    ) {
         $this->name       = $this->reflection->getName();
         $this->setNamespace($namespace);
 

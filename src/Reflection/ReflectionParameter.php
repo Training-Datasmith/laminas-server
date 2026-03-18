@@ -1,17 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
 
 namespace Laminas\Server\Reflection;
 
-use Deprecated;
-use ReflectionException;
-
 use function call_user_func_array;
+
+use Deprecated;
+
 use function is_string;
 use function method_exists;
+
+use ReflectionException;
 
 /**
  * Parameter Reflection

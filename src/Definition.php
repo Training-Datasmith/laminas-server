@@ -1,25 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
 
 namespace Laminas\Server;
 
-use Countable;
-use Iterator;
-use Laminas\Server\Exception\InvalidArgumentException;
-use Override;
-use ReturnTypeWillChange;
-
 use function array_key_exists;
 use function count;
+
+use Countable;
+
 use function current;
 use function is_array;
+
 use function is_numeric;
+
+use Iterator;
+
 use function key;
+
+use Laminas\Server\Exception\InvalidArgumentException;
+
 use function next;
+
+use Override;
+
 use function reset;
+
+use ReturnTypeWillChange;
+
 use function sprintf;
 
 /**

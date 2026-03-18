@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
 
 namespace Laminas\Server\Method;
-
-use Laminas\Server\Method\Parameter;
 
 use function array_key_exists;
 use function count;
