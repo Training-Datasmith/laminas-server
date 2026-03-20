@@ -25,8 +25,7 @@
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
-    "extra": {
-    },
+    "extra": [],
     "require": {
         "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
         "laminas/laminas-code": "^4.7.1",
@@ -45,7 +44,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "LaminasTest\\Server\\": "test/"
+            "Laminas_Test\\Server\\": "test/"
         },
         "files": [
             "test/Reflection/TestAsset/functions.php",
