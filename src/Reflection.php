@@ -1,28 +1,22 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
-
 namespace Laminas\Server;
 
 use function class_exists;
 use function function_exists;
 use function in_array;
 use function is_array;
-
 use function is_object;
 use function is_string;
-
 use Laminas\Server\Reflection\Exception\InvalidArgumentException;
 use Laminas\Server\Reflection\ReflectionClass;
 use Laminas\Server\Reflection\ReflectionFunction;
-use ReflectionObject;
-
+use Reflection_Object;
 use function sprintf;
-
 /**
  * Reflection for determining method signatures to use with server classes
  *
@@ -46,23 +40,20 @@ class Reflection
      * also for XmlRpc namespacing
      * @throws InvalidArgumentException
      */
-    public static function reflectClass($class, $argv = false, $namespace = ''): \Laminas\Server\Reflection\ReflectionClass
+    public static function reflect_class($class, $argv = false, $namespace = ''): \Laminas\Server\Reflection\ReflectionClass
     {
         if (is_object($class)) {
-            $reflection = new ReflectionObject($class);
+            $reflection = new Reflection_Object($class);
         } elseif (class_exists($class)) {
             $reflection = new \ReflectionClass($class);
         } else {
             throw new InvalidArgumentException('Invalid class or object passed to attachClass()');
         }
-
-        if ($argv && ! is_array($argv)) {
+        if ($argv && !is_array($argv)) {
             throw new InvalidArgumentException('Invalid argv argument passed to reflectClass');
         }
-
         return new ReflectionClass($reflection, $namespace, $argv);
     }
-
     /**
      * Perform function reflection to create dispatch signatures
      *
@@ -79,22 +70,16 @@ class Reflection
      * collisions, also for XmlRpc namespacing
      * @throws InvalidArgumentException
      */
-    public static function reflectFunction($function, $argv = false, $namespace = ''): \Laminas\Server\Reflection\ReflectionFunction
+    public static function reflect_function($function, $argv = false, $namespace = ''): \Laminas\Server\Reflection\ReflectionFunction
     {
-        if (! is_string($function) || ! function_exists($function)) {
-            throw new InvalidArgumentException(sprintf(
-                'Invalid function "%s" passed to reflectFunction',
-                $function
-            ));
+        if (!is_string($function) || !function_exists($function)) {
+            throw new InvalidArgumentException(sprintf('Invalid function "%s" passed to reflectFunction', $function));
         }
-
         // Cast null or false values to empty array
         $argv = in_array($argv, [false, null], true) ? [] : $argv;
-
-        if (! is_array($argv)) {
+        if (!is_array($argv)) {
             throw new InvalidArgumentException('Invalid argv argument passed to reflectFunction');
         }
-
         return new ReflectionFunction(new \ReflectionFunction($function), $namespace, $argv);
     }
 }

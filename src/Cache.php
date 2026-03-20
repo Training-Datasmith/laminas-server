@@ -1,19 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
-
 namespace Laminas\Server;
 
 use function array_keys;
-
 use function dirname;
-
 use const E_NOTICE;
-
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
@@ -21,14 +16,10 @@ use function in_array;
 use function is_readable;
 use function is_string;
 use function is_writable;
-
-use Laminas\Stdlib\ErrorHandler;
-
+use Laminas\Stdlib\Error_Handler;
 use function serialize;
 use function unlink;
-
 use function unserialize;
-
 /**
  * \Laminas\Server\Cache: cache server definitions
  *
@@ -37,8 +28,7 @@ use function unserialize;
 class Cache
 {
     /** @var array Methods to skip when caching server */
-    protected static $skipMethods = [];
-
+    protected static $skip_methods = [];
     /**
      * Cache a file containing the dispatch list.
      *
@@ -52,22 +42,18 @@ class Cache
      */
     public static function save($filename, Server $server): bool
     {
-        if (! is_string($filename) || (! file_exists($filename) && ! is_writable(dirname($filename)))) {
+        if (!is_string($filename) || !file_exists($filename) && !is_writable(dirname($filename))) {
             return false;
         }
-
-        $methods = self::createDefinition($server->getFunctions());
-
-        ErrorHandler::start();
+        $methods = self::create_definition($server->get_functions());
+        Error_Handler::start();
         $test = file_put_contents($filename, serialize($methods));
-        ErrorHandler::stop();
+        Error_Handler::stop();
         if (0 === $test) {
             return false;
         }
-
         return true;
     }
-
     /**
      * Load server definition from a file
      *
@@ -99,29 +85,24 @@ class Cache
      */
     public static function get($filename, Server $server): bool
     {
-        if (! is_string($filename) || ! file_exists($filename) || ! is_readable($filename)) {
+        if (!is_string($filename) || !file_exists($filename) || !is_readable($filename)) {
             return false;
         }
-
-        ErrorHandler::start();
+        Error_Handler::start();
         $dispatch = file_get_contents($filename);
-        ErrorHandler::stop();
+        Error_Handler::stop();
         if (false === $dispatch) {
             return false;
         }
-
-        ErrorHandler::start(E_NOTICE);
-        $dispatchArray = unserialize($dispatch);
-        ErrorHandler::stop();
-        if (false === $dispatchArray) {
+        Error_Handler::start(E_NOTICE);
+        $dispatch_array = unserialize($dispatch);
+        Error_Handler::stop();
+        if (false === $dispatch_array) {
             return false;
         }
-
-        $server->loadFunctions($dispatchArray);
-
+        $server->load_functions($dispatch_array);
         return true;
     }
-
     /**
      * Remove a cache file
      *
@@ -133,40 +114,35 @@ class Cache
             unlink($filename);
             return true;
         }
-
         return false;
     }
-
     /**
      * @param array|Definition $methods
      * @return array|Definition
      */
-    private static function createDefinition($methods)
+    private static function create_definition($methods)
     {
         if ($methods instanceof Definition) {
-            return self::createDefinitionFromMethodsDefinition($methods);
+            return self::create_definition_from_methods_definition($methods);
         }
-
-        return self::createDefinitionFromMethodsArray($methods);
+        return self::create_definition_from_methods_array($methods);
     }
-
-    private static function createDefinitionFromMethodsDefinition(Definition $methods): \Laminas\Server\Definition
+    private static function create_definition_from_methods_definition(Definition $methods): \Laminas\Server\Definition
     {
         $definition = new Definition();
         foreach ($methods as $method) {
-            if (in_array($method->getName(), static::$skipMethods, true)) {
+            if (in_array($method->get_name(), static::$skip_methods, true)) {
                 continue;
             }
-            $definition->addMethod($method);
+            $definition->add_method($method);
         }
         return $definition;
     }
-
-    private static function createDefinitionFromMethodsArray(array $methods): array
+    private static function create_definition_from_methods_array(array $methods): array
     {
-        foreach (array_keys($methods) as $methodName) {
-            if (in_array($methodName, static::$skipMethods, true)) {
-                unset($methods[$methodName]);
+        foreach (array_keys($methods) as $method_name) {
+            if (in_array($method_name, static::$skip_methods, true)) {
+                unset($methods[$method_name]);
             }
         }
         return $methods;

@@ -1,26 +1,19 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
-
 namespace Laminas\Server\Reflection;
 
 use function call_user_func_array;
-
 use Deprecated;
-
 use function is_array;
 use function is_string;
 use function method_exists;
 use function preg_match;
-
 use ReflectionClass as PhpReflectionClass;
-
 use function str_starts_with;
-
 /**
  * Class/Object reflection
  *
@@ -38,26 +31,22 @@ class ReflectionClass
      * @var array
      */
     protected $config = [];
-
     /**
      * Array of {@link \Laminas\Server\Reflection\Method}s
      *
      * @var array
      */
     protected $methods = [];
-
     /**
      * Namespace
      *
      * @var string
      */
     protected $namespace;
-
     /**
      * Reflection class name (needed for serialization)
      */
     protected string $name;
-
     /**
      * Constructor
      *
@@ -67,31 +56,29 @@ class ReflectionClass
      * @param string $namespace
      * @param mixed $argv
      */
-    public function __construct(/**
-     * ReflectionClass object
-     */
+    public function __construct(
+        /**
+         * ReflectionClass object
+         */
         protected \ReflectionClass $reflection,
         $namespace = null,
         $argv = false
-    ) {
-        $this->name       = $this->reflection->getName();
-        $this->setNamespace($namespace);
-
+    )
+    {
+        $this->name = $this->reflection->get_name();
+        $this->set_namespace($namespace);
         $argv = is_array($argv) ? $argv : [];
-
-        foreach ($this->reflection->getMethods() as $method) {
+        foreach ($this->reflection->get_methods() as $method) {
             // Don't aggregate magic methods
-            if (str_starts_with($method->getName(), '__')) {
+            if (str_starts_with($method->get_name(), '__')) {
                 continue;
             }
-
-            if ($method->isPublic()) {
+            if ($method->is_public()) {
                 // Get signatures and description
-                $this->methods[] = new ReflectionMethod($this, $method, $this->getNamespace(), $argv);
+                $this->methods[] = new ReflectionMethod($this, $method, $this->get_namespace(), $argv);
             }
         }
     }
-
     /**
      * Proxy reflection calls
      *
@@ -104,10 +91,8 @@ class ReflectionClass
         if (method_exists($this->reflection, $method)) {
             return call_user_func_array([$this->reflection, $method], $args);
         }
-
         throw new Exception\BadMethodCallException('Invalid reflection method');
     }
-
     /**
      * Retrieve configuration parameters
      *
@@ -118,7 +103,6 @@ class ReflectionClass
     {
         return $this->config[$key] ?? null;
     }
-
     /**
      * Set configuration parameters
      *
@@ -130,48 +114,42 @@ class ReflectionClass
     {
         $this->config[$key] = $value;
     }
-
     /**
      * Return array of dispatchable {@link \Laminas\Server\Reflection\ReflectionMethod}s.
      *
      * @access public
      * @return array
      */
-    public function getMethods()
+    public function get_methods()
     {
         return $this->methods;
     }
-
     /**
      * Get namespace for this class
      *
      * @return string
      */
-    public function getNamespace()
+    public function get_namespace()
     {
         return $this->namespace;
     }
-
     /**
      * Set namespace for this class
      *
      * @param string $namespace
      * @throws Exception\InvalidArgumentException
      */
-    public function setNamespace($namespace): void
+    public function set_namespace($namespace): void
     {
         if (empty($namespace)) {
             $this->namespace = '';
             return;
         }
-
-        if (! is_string($namespace) || ! preg_match('/[a-z0-9_\.]+/i', $namespace)) {
+        if (!is_string($namespace) || !preg_match('/[a-z0-9_\.]+/i', $namespace)) {
             throw new Exception\InvalidArgumentException('Invalid namespace');
         }
-
         $this->namespace = $namespace;
     }
-
     /**
      * @return void
      */
@@ -180,7 +158,6 @@ class ReflectionClass
     {
         $this->__unserialize($this->__serialize());
     }
-
     /**
      * Wakeup from serialization
      *
@@ -189,15 +166,13 @@ class ReflectionClass
      */
     public function __unserialize(array $data): void
     {
-        $this->config    = $data['config'] ?? '';
-        $this->methods   = $data['methods'] ?? '';
+        $this->config = $data['config'] ?? '';
+        $this->methods = $data['methods'] ?? '';
         $this->namespace = $data['namespace'] ?? '';
-        $this->name      = $data['name'] ?? '';
-
+        $this->name = $data['name'] ?? '';
         // Restore runtime-only dependency
-        $this->reflection = new PhpReflectionClass($this->name);
+        $this->reflection = new Php_Reflection_Class($this->name);
     }
-
     /**
      * @return string[]
      */
@@ -206,17 +181,11 @@ class ReflectionClass
     {
         return $this->__serialize();
     }
-
     /**
      * @return string[]
      */
     public function __serialize(): array
     {
-        return [
-            'config'    => $this->config,
-            'methods'   => $this->methods,
-            'namespace' => $this->namespace,
-            'name'      => $this->name,
-        ];
+        return ['config' => $this->config, 'methods' => $this->methods, 'namespace' => $this->namespace, 'name' => $this->name];
     }
 }

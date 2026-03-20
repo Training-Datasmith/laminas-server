@@ -1,29 +1,23 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
-
 namespace Laminas\Server;
 
 use function call_user_func_array;
 use function is_object;
-
 use Override;
 use ReflectionClass;
-
 /**
  * Abstract Server implementation
  */
-abstract class AbstractServer implements Server
+abstract class Abstract_Server implements Server
 {
     /** @var bool Flag; whether or not overwriting existing methods is allowed */
-    protected $overwriteExistingMethods = false;
-
+    protected $overwrite_existing_methods = false;
     protected \Laminas\Server\Definition $table;
-
     /**
      * Constructor
      *
@@ -32,9 +26,8 @@ abstract class AbstractServer implements Server
     public function __construct()
     {
         $this->table = new Definition();
-        $this->table->setOverwriteExistingMethods($this->overwriteExistingMethods);
+        $this->table->set_overwrite_existing_methods($this->overwrite_existing_methods);
     }
-
     /**
      * Returns a list of registered methods
      *
@@ -43,36 +36,31 @@ abstract class AbstractServer implements Server
      * @return Definition
      */
     #[Override]
-    public function getFunctions()
+    public function get_functions()
     {
         return $this->table;
     }
-
     /**
      * Build callback for method signature
      *
      * @return Method\Callback
      */
-    protected function buildCallback(Reflection\AbstractFunction $reflection)
+    protected function build_callback(Reflection\Abstract_Function $reflection)
     {
         $callback = new Method\Callback();
         if ($reflection instanceof Reflection\ReflectionMethod) {
             /** @var string $declaringClass */
-            $declaringClass = $reflection->getDeclaringClass()->getName();
+            $declaring_class = $reflection->get_declaring_class()->get_name();
             /** @var string $methodName */
-            $methodName = $reflection->getName();
-            $callback->setType($reflection->isStatic() ? 'static' : 'instance')
-                ->setClass($declaringClass)
-                ->setMethod($methodName);
+            $method_name = $reflection->get_name();
+            $callback->set_type($reflection->is_static() ? 'static' : 'instance')->set_class($declaring_class)->set_method($method_name);
         } elseif ($reflection instanceof Reflection\ReflectionFunction) {
             /** @var string $functionName */
-            $functionName = $reflection->getName();
-            $callback->setType('function')
-                ->setFunction($functionName);
+            $function_name = $reflection->get_name();
+            $callback->set_type('function')->set_function($function_name);
         }
         return $callback;
     }
-
     /**
      * Build callback for method signature
      *
@@ -82,12 +70,11 @@ abstract class AbstractServer implements Server
      * @return Method\Callback
      */
     // @codingStandardsIgnoreStart
-    protected function _buildCallback(Reflection\AbstractFunction $reflection)
+    protected function _build_callback(Reflection\Abstract_Function $reflection)
     {
         // @codingStandardsIgnoreEnd
-        return $this->buildCallback($reflection);
+        return $this->build_callback($reflection);
     }
-
     /**
      * Build a method signature
      *
@@ -95,45 +82,34 @@ abstract class AbstractServer implements Server
      * @return Method\Definition
      * @throws Exception\RuntimeException On duplicate entry.
      */
-    final protected function buildSignature(Reflection\AbstractFunction $reflection, $class = null)
+    final protected function build_signature(Reflection\Abstract_Function $reflection, $class = null)
     {
-        $ns     = $reflection->getNamespace();
-        $name   = $reflection->getName();
+        $ns = $reflection->get_namespace();
+        $name = $reflection->get_name();
         $method = empty($ns) ? $name : $ns . '.' . $name;
-
-        if (! $this->overwriteExistingMethods && $this->table->hasMethod($method)) {
+        if (!$this->overwrite_existing_methods && $this->table->has_method($method)) {
             throw new Exception\RuntimeException('Duplicate method registered: ' . $method);
         }
-
         $definition = new Method\Definition();
-        $definition->setName($method)
-                   ->setCallback($this->buildCallback($reflection))
-                   ->setMethodHelp($reflection->getDescription())
-                   ->setInvokeArguments($reflection->getInvokeArguments());
-
-        foreach ($reflection->getPrototypes() as $proto) {
+        $definition->set_name($method)->set_callback($this->build_callback($reflection))->set_method_help($reflection->get_description())->set_invoke_arguments($reflection->get_invoke_arguments());
+        foreach ($reflection->get_prototypes() as $proto) {
             $prototype = new Method\Prototype();
-            $prototype->setReturnType($this->_fixType($proto->getReturnType()));
-            foreach ($proto->getParameters() as $parameter) {
-                $param = new Method\Parameter([
-                    'type'     => $this->_fixType($parameter->getType()),
-                    'name'     => $parameter->getName(),
-                    'optional' => $parameter->isOptional(),
-                ]);
-                if ($parameter->isDefaultValueAvailable()) {
-                    $param->setDefaultValue($parameter->getDefaultValue());
+            $prototype->set_return_type($this->_fix_type($proto->get_return_type()));
+            foreach ($proto->get_parameters() as $parameter) {
+                $param = new Method\Parameter(['type' => $this->_fix_type($parameter->get_type()), 'name' => $parameter->get_name(), 'optional' => $parameter->is_optional()]);
+                if ($parameter->is_default_value_available()) {
+                    $param->set_default_value($parameter->get_default_value());
                 }
-                $prototype->addParameter($param);
+                $prototype->add_parameter($param);
             }
-            $definition->addPrototype($prototype);
+            $definition->add_prototype($prototype);
         }
         if (is_object($class)) {
-            $definition->setObject($class);
+            $definition->set_object($class);
         }
-        $this->table->addMethod($definition);
+        $this->table->add_method($definition);
         return $definition;
     }
-
     /**
      * Build a method signature
      *
@@ -145,12 +121,11 @@ abstract class AbstractServer implements Server
      * @throws Exception\RuntimeException on duplicate entry
      */
     // @codingStandardsIgnoreStart
-    protected function _buildSignature(Reflection\AbstractFunction $reflection, $class = null)
+    protected function _build_signature(Reflection\Abstract_Function $reflection, $class = null)
     {
         // @codingStandardsIgnoreEnd
-        return $this->buildSignature($reflection, $class);
+        return $this->build_signature($reflection, $class);
     }
-
     /**
      * Dispatch method
      *
@@ -163,34 +138,29 @@ abstract class AbstractServer implements Server
     protected function _dispatch(Method\Definition $invokable, array $params)
     {
         // @codingStandardsIgnoreEnd
-        $callback = $invokable->getCallback();
-        $type     = $callback->getType();
-
+        $callback = $invokable->get_callback();
+        $type = $callback->get_type();
         if ('function' === $type) {
-            $function = $callback->getFunction();
+            $function = $callback->get_function();
             return call_user_func_array($function, $params);
         }
-
-        $class  = $callback->getClass();
-        $method = $callback->getMethod();
-
+        $class = $callback->get_class();
+        $method = $callback->get_method();
         if ('static' === $type) {
             return call_user_func_array([$class, $method], $params);
         }
-
-        $object = $invokable->getObject();
-        if (! is_object($object)) {
-            $invokeArgs = $invokable->getInvokeArguments();
-            if (! empty($invokeArgs)) {
+        $object = $invokable->get_object();
+        if (!is_object($object)) {
+            $invoke_args = $invokable->get_invoke_arguments();
+            if (!empty($invoke_args)) {
                 $reflection = new ReflectionClass($class);
-                $object     = $reflection->newInstanceArgs($invokeArgs);
+                $object = $reflection->new_instance_args($invoke_args);
             } else {
                 $object = new $class();
             }
         }
         return call_user_func_array([$object, $method], $params);
     }
-
     // @codingStandardsIgnoreStart
     /**
      * Map PHP type to protocol type
@@ -200,6 +170,6 @@ abstract class AbstractServer implements Server
      * @param  string $type
      * @return string
      */
-    abstract protected function _fixType($type);
+    abstract protected function _fix_type($type);
     // @codingStandardsIgnoreEnd
 }

@@ -1,15 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
-
 namespace Laminas\Server\Reflection;
 
 use function is_string;
-
 /**
  * Return value reflection
  *
@@ -17,7 +14,7 @@ use function is_string;
  *
  * @final This class should not be extended
  */
-class ReflectionReturnValue
+class Reflection_Return_Value
 {
     /**
      * Return value type
@@ -25,14 +22,12 @@ class ReflectionReturnValue
      * @var string
      */
     protected $type;
-
     /**
      * Return value description
      *
      * @var string
      */
     protected $description;
-
     /**
      * Constructor
      *
@@ -41,57 +36,51 @@ class ReflectionReturnValue
      */
     public function __construct($type = 'mixed', $description = '')
     {
-        $this->setType($type);
-        $this->setDescription($description);
+        $this->set_type($type);
+        $this->set_description($description);
     }
-
     /**
      * Retrieve parameter type
      *
      * @return string
      */
-    public function getType()
+    public function get_type()
     {
         return $this->type;
     }
-
     /**
      * Set parameter type
      *
      * @param string|null $type
      * @throws Exception\InvalidArgumentException
      */
-    public function setType($type): void
+    public function set_type($type): void
     {
-        if (! is_string($type) && (null !== $type)) {
+        if (!is_string($type) && null !== $type) {
             throw new Exception\InvalidArgumentException('Invalid parameter type');
         }
-
         $this->type = $type;
     }
-
     /**
      * Retrieve parameter description
      *
      * @return string
      */
-    public function getDescription()
+    public function get_description()
     {
         return $this->description;
     }
-
     /**
      * Set parameter description
      *
      * @param string|null $description
      * @throws Exception\InvalidArgumentException
      */
-    public function setDescription($description): void
+    public function set_description($description): void
     {
-        if (! is_string($description) && (null !== $description)) {
+        if (!is_string($description) && null !== $description) {
             throw new Exception\InvalidArgumentException('Invalid parameter description');
         }
-
         $this->description = $description;
     }
 }

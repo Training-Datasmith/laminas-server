@@ -1,91 +1,76 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
-
 namespace Laminas\Server\Reflection;
 
 use function array_map;
-
 use function array_merge;
 use function implode;
-
 use Override;
-
 use const PHP_EOL;
-
 use function str_contains;
-
 use function str_replace;
-
 /**
  * Method Reflection
  *
  * @final This class should not be extended
  */
-class ReflectionMethod extends AbstractFunction
+class ReflectionMethod extends Abstract_Function
 {
     /**
      * Doc block inherit tag for search
      */
     public const INHERIT_TAG = '{@inheritdoc}';
-
     /**
      * Parent class name
      *
      * @var string
      */
     protected $class;
-
     /**
      * Constructor
      *
      * @param string $namespace
      * @param array $argv
      */
-    public function __construct(/**
-     * Parent class reflection
-     */
-        protected \Laminas\Server\Reflection\ReflectionClass $classReflection,
+    public function __construct(
+        /**
+         * Parent class reflection
+         */
+        protected \Laminas\Server\Reflection\ReflectionClass $class_reflection,
         \ReflectionMethod $r,
         $namespace = null,
         $argv = []
-    ) {
-        $this->reflection      = $r;
-
-        $classNamespace = $this->classReflection->getNamespace();
-
+    )
+    {
+        $this->reflection = $r;
+        $class_namespace = $this->class_reflection->get_namespace();
         // Determine namespace
-        if (! empty($namespace)) {
-            $this->setNamespace($namespace);
-        } elseif (! empty($classNamespace)) {
-            $this->setNamespace($classNamespace);
+        if (!empty($namespace)) {
+            $this->set_namespace($namespace);
+        } elseif (!empty($class_namespace)) {
+            $this->set_namespace($class_namespace);
         }
-
         // Determine arguments
         $this->argv = $argv;
-
         // If method call, need to store some info on the class
-        $this->class = $this->classReflection->getName();
-        $this->name  = $r->getName();
-
+        $this->class = $this->class_reflection->get_name();
+        $this->name = $r->get_name();
         // Perform some introspection
         $this->reflect();
     }
-
     /**
      * Return the reflection for the class that defines this method
      *
      * @return ReflectionClass|\ReflectionClass
      */
-    public function getDeclaringClass()
+    public function get_declaring_class()
     {
-        return $this->classReflection;
+        return $this->class_reflection;
     }
-
     /**
      * Wakeup from serialization
      *
@@ -96,17 +81,10 @@ class ReflectionMethod extends AbstractFunction
     public function __unserialize(array $data): void
     {
         $this->class = $data['class'];
-        $this->name  = $data['name'];
-
-        $this->classReflection = new ReflectionClass(
-            new \ReflectionClass($this->class),
-            $this->getNamespace(),
-            $this->getInvokeArguments()
-        );
-
-        $this->reflection = new \ReflectionMethod($this->classReflection->getName(), $this->name);
+        $this->name = $data['name'];
+        $this->class_reflection = new ReflectionClass(new \ReflectionClass($this->class), $this->get_namespace(), $this->get_invoke_arguments());
+        $this->reflection = new \ReflectionMethod($this->class_reflection->get_name(), $this->name);
     }
-
     /**
      * {@inheritdoc}
      *
@@ -115,50 +93,38 @@ class ReflectionMethod extends AbstractFunction
     #[Override]
     protected function reflect()
     {
-        $docComment = $this->reflection->getDocComment();
-        if (str_contains($docComment, self::INHERIT_TAG)) {
-            $this->docComment = $this->fetchRecursiveDocComment();
+        $doc_comment = $this->reflection->get_doc_comment();
+        if (str_contains($doc_comment, self::INHERIT_TAG)) {
+            $this->doc_comment = $this->fetch_recursive_doc_comment();
         }
-
         parent::reflect();
     }
-
     /**
      * Fetch all doc comments for inherit values
      */
-    private function fetchRecursiveDocComment(): string
+    private function fetch_recursive_doc_comment(): string
     {
-        $currentMethodName = $this->reflection->getName();
-        $docCommentList[]  = $this->reflection->getDocComment();
-
+        $current_method_name = $this->reflection->get_name();
+        $doc_comment_list[] = $this->reflection->get_doc_comment();
         // fetch all doc blocks for method from parent classes
-        $docCommentFetched = $this->fetchRecursiveDocBlockFromParent($this->classReflection, $currentMethodName);
-        if ($docCommentFetched) {
-            $docCommentList = array_merge($docCommentList, $docCommentFetched);
+        $doc_comment_fetched = $this->fetch_recursive_doc_block_from_parent($this->class_reflection, $current_method_name);
+        if ($doc_comment_fetched) {
+            $doc_comment_list = array_merge($doc_comment_list, $doc_comment_fetched);
         }
-
         // fetch doc blocks from interfaces
-        $interfaceReflectionList = $this->classReflection->getInterfaces();
-        foreach ($interfaceReflectionList as $interfaceReflection) {
-            if (! $interfaceReflection->hasMethod($currentMethodName)) {
+        $interface_reflection_list = $this->class_reflection->get_interfaces();
+        foreach ($interface_reflection_list as $interface_reflection) {
+            if (!$interface_reflection->has_method($current_method_name)) {
                 continue;
             }
-
-            $docCommentList[] = $interfaceReflection->getMethod($currentMethodName)->getDocComment();
+            $doc_comment_list[] = $interface_reflection->get_method($current_method_name)->get_doc_comment();
         }
-
-        $normalizedDocCommentList = array_map(
-            function ($docComment): string|array {
-                $docComment = str_replace('/**', '', $docComment);
-
-                return str_replace('*/', '', $docComment);
-            },
-            $docCommentList
-        );
-
-        return '/**' . implode(PHP_EOL, $normalizedDocCommentList) . '*/';
+        $normalized_doc_comment_list = array_map(function ($doc_comment): string|array {
+            $doc_comment = str_replace('/**', '', $doc_comment);
+            return str_replace('*/', '', $doc_comment);
+        }, $doc_comment_list);
+        return '/**' . implode(PHP_EOL, $normalized_doc_comment_list) . '*/';
     }
-
     /**
      * Fetch recursive doc blocks from parent classes
      *
@@ -166,37 +132,33 @@ class ReflectionMethod extends AbstractFunction
      * @param string           $methodName
      * @return array|void
      */
-    private function fetchRecursiveDocBlockFromParent($reflectionClass, $methodName)
+    private function fetch_recursive_doc_block_from_parent($reflection_class, $method_name)
     {
-        $docComment            = [];
-        $parentReflectionClass = $reflectionClass->getParentClass();
-        if (! $parentReflectionClass) {
+        $doc_comment = [];
+        $parent_reflection_class = $reflection_class->get_parent_class();
+        if (!$parent_reflection_class) {
             return;
         }
-
-        if (! $parentReflectionClass->hasMethod($methodName)) {
+        if (!$parent_reflection_class->has_method($method_name)) {
             return;
         }
-
-        $methodReflection = $parentReflectionClass->getMethod($methodName);
-        $docCommentLast   = $methodReflection->getDocComment();
-        $docComment[]     = $docCommentLast;
-        if ($this->isInherit($docCommentLast)) {
-            if ($docCommentFetched = $this->fetchRecursiveDocBlockFromParent($parentReflectionClass, $methodName)) {
-                $docComment = array_merge($docComment, $docCommentFetched);
+        $method_reflection = $parent_reflection_class->get_method($method_name);
+        $doc_comment_last = $method_reflection->get_doc_comment();
+        $doc_comment[] = $doc_comment_last;
+        if ($this->is_inherit($doc_comment_last)) {
+            if ($doc_comment_fetched = $this->fetch_recursive_doc_block_from_parent($parent_reflection_class, $method_name)) {
+                $doc_comment = array_merge($doc_comment, $doc_comment_fetched);
             }
         }
-
-        return $docComment;
+        return $doc_comment;
     }
-
     /**
      * Return true if doc block inherit from parent or interface
      *
      * @param string $docComment
      */
-    private function isInherit($docComment): bool
+    private function is_inherit($doc_comment): bool
     {
-        return str_contains($docComment, self::INHERIT_TAG);
+        return str_contains($doc_comment, self::INHERIT_TAG);
     }
 }

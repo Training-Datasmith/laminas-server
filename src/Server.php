@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * @see       https://github.com/laminas/laminas-server for the canonical source repository
  */
-
 namespace Laminas\Server;
 
 /**
@@ -31,8 +29,7 @@ interface Server
      * @param  string $namespace
      * @return void
      */
-    public function addFunction($function, $namespace = '');
-
+    public function add_function($function, $namespace = '');
     /**
      * Attach a class to a server
      *
@@ -52,8 +49,7 @@ interface Server
      *                              dispatch.
      * @return void
      */
-    public function setClass($class, $namespace = '', $argv = null);
-
+    public function set_class($class, $namespace = '', $argv = null);
     /**
      * Generate a server fault
      *
@@ -62,7 +58,6 @@ interface Server
      * @return mixed
      */
     public function fault($fault = null, $code = 404);
-
     /**
      * Handle a request
      *
@@ -74,7 +69,6 @@ interface Server
      * @return mixed
      */
     public function handle($request = false);
-
     /**
      * Return a server definition array
      *
@@ -84,8 +78,7 @@ interface Server
      *
      * @return array
      */
-    public function getFunctions();
-
+    public function get_functions();
     /**
      * Load server definition
      *
@@ -94,8 +87,7 @@ interface Server
      * @param  array $definition
      * @return void
      */
-    public function loadFunctions($definition);
-
+    public function load_functions($definition);
     /**
      * Set server persistence
      *
@@ -103,8 +95,7 @@ interface Server
      * @param  int $mode
      * @return void
      */
-    public function setPersistence($mode);
-
+    public function set_persistence($mode);
     /**
      * Sets auto-response flag for the server.
      *
@@ -113,20 +104,18 @@ interface Server
      * @param  bool $flag
      * @return ServerInterface Self instance.
      */
-    public function setReturnResponse($flag = true);
-
+    public function set_return_response($flag = true);
     /**
      * Returns auto-response flag of the server.
      *
      * @return bool $flag Current status.
      */
-    public function getReturnResponse();
-
+    public function get_return_response();
     /**
      * Returns last produced response.
      *
      * @return string|object Content of last response, or response object that
      *                       implements __toString() methods.
      */
-    public function getResponse();
+    public function get_response();
 }
